@@ -7,8 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.app.projet_zero.model.BottomMenuData
+import com.app.projet_zero.data.BottomMenuData
 import com.app.projet_zero.screen.HomeScreen
+import com.app.projet_zero.screen.LibraryScreen
 import com.app.projet_zero.screen.ProfileScreen
 
 
@@ -21,6 +22,9 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
     ) {
         composable(route = BottomMenuData.Home.route){
             HomeScreen()
+        }
+        composable(route = BottomMenuData.Library.route){
+            LibraryScreen()
         }
         composable(route = BottomMenuData.Profile.route){
             ProfileScreen()

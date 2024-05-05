@@ -1,10 +1,10 @@
-package com.app.projet_zero.model
+package com.app.projet_zero.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomMenuData(
@@ -18,10 +18,10 @@ sealed class BottomMenuData(
         title = "Home",
         route = "home")
 
-    object Add: BottomMenuData(
-        icon = Icons.Outlined.AddCircle,
-        title = "Add",
-        route = "add")
+    object Library: BottomMenuData(
+        icon = Icons.Outlined.Place,
+        title = "Library",
+        route = "library")
 
     object Profile: BottomMenuData(
         icon = Icons.Outlined.AccountCircle,

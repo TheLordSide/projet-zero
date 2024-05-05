@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.app.projet_zero"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -50,9 +50,9 @@ android {
 }
 
 dependencies {
-    implementation ("androidx.compose.ui:ui:1.6.7")
-    implementation ("androidx.compose.material:material:1.6.7")
-    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.logging.interceptor)
+    implementation (libs.retrofit)
+    implementation (libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -61,6 +61,14 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    // Pager and Indicators - Accompanist
+    //implementation ("com.google.accompanist:accompanist-pager:$accompanist_version")
+    //implementation ("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
+
+    //OnBord Compose Lib
+    //implementation ("com.google.accompanist:accompanist-pager:0.24.13-rc")
+    implementation ("com.github.B-L-Studios:OnBoarding-compose:1.0.2")
+    implementation(libs.androidx.foundation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,4 +76,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+
+
 }
