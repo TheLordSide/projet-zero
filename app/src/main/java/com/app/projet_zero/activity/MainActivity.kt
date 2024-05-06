@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.app.projet_zero.activity.ui.theme.Projet_zeroTheme
 import com.app.projet_zero.navigation.MainScreen
 import com.app.projet_zero.onboard.OnboardScreen
-import com.app.projet_zero.screen.LibraryScreen
+//import com.app.projet_zero.screen.LibraryScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

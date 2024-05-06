@@ -68,6 +68,7 @@ dependencies {
     //OnBord Compose Lib
     //implementation ("com.google.accompanist:accompanist-pager:0.24.13-rc")
     implementation ("com.github.B-L-Studios:OnBoarding-compose:1.0.2")
+    implementation (libs.accompanist.permissions)
     implementation(libs.androidx.foundation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
