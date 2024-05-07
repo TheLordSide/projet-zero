@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation ("com.tom-roush:pdfbox-android:2.0.27.0")
     // Pager and Indicators - Accompanist
     //implementation ("com.google.accompanist:accompanist-pager:$accompanist_version")
     //implementation ("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")

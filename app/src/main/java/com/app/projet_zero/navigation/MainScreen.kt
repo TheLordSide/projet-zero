@@ -2,15 +2,21 @@ package com.app.projet_zero.navigation
 
 import PDFLoader
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.net.Uri
 import android.os.Build
+import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -26,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,30 +44,62 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.projet_zero.data.BottomMenuData
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import java.io.File
+
 
 @ExperimentalMaterial3Api
 @Composable
 fun MainScreen(){
     var topBarTitle by remember {mutableStateOf("Home")}
     var topBarIcon by remember { mutableStateOf(Icons.Default.Home) }
+    // TODO A refactor toute la partie des data du pdf
+    var documentUri by remember { mutableStateOf<Uri?>(null) }
+    var documentName by remember { mutableStateOf<String?>(null)}
+    var documentSize by remember { mutableStateOf<Long?>(null) }
+
     val context = LocalContext.current
     val chooseFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        // Utilisez la fonction loadPDF pour charger le PDF
-        val inputStream = uri?.let { PDFLoader.loadPDF(context, it) }
-        // Faites quelque chose avec l'inputStream du PDF chargé
-    }
-
-    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            // Si la permission est accordée, lancer la sélection de fichier PDF
-            chooseFileLauncher.launch("application/pdf")
-        } else {
-            // Si la permission est refusée, afficher un message d'erreur ou prendre une autre action
-            // Par exemple, afficher un Toast
-            Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+        documentUri = uri
+        documentUri?.let {
+            // Obtenez le nom du document à partir de l'URI
+            documentName = getFileNameFromUri(context, it)
+            documentSize = getFileSizeFromUri(context, it)
         }
 
+
+        // Utilisez la fonction loadPDF pour charger le PDF
+        val inputStream = uri?.let { PDFLoader.loadPDF(context, it) }
+        if (inputStream != null) {
+            val document = PDDocument.load(inputStream)
+            val info = document.documentInformation
+            val extractedTitle = info.title ?: "Untitled" // Extract the title from the PDF
+
+            // Mettez à jour topBarTitle avec le titre extrait du PDF s'il n'est pas "Untitled"
+            if (extractedTitle != "Untitled") {
+                topBarTitle = extractedTitle
+            }
+
+            // Fermez le document une fois que vous avez fini de l'utiliser
+            document.close()
+        } else {
+            // Gérer le cas où le fichier PDF n'a pas pu être chargé
+        }
     }
+
+    val permissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                // Si la permission est accordée, lancer la sélection de fichier PDF
+                chooseFileLauncher.launch("application/pdf")
+            } else {
+                // Si la permission est refusée, afficher un message d'erreur ou prendre une autre action
+                // Par exemple, afficher un Toast
+                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
 
 
     val navController = rememberNavController()
@@ -82,40 +122,84 @@ fun MainScreen(){
                 }
             )
         },
+
+
         topBar = {
             TopAppBar(
                 title = { Text(text = topBarTitle, fontSize = 30.sp) },
                 actions = {
                     if (topBarTitle == "Library") {
                         IconButton(onClick = {
-                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                            } else {
+                                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            }
+
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Add,
-                                contentDescription = "Localized description",
+                                contentDescription = "Add",
                                 modifier = Modifier.size(30.dp)
                             )
                         }
-                    }
-                },
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert,
+                                contentDescription = "More",
+                                modifier = Modifier.size(30.dp)
+                            )
 
-                )
+                        }
+                    }
+                }
+
+
+            )
         },
+
+
     ) {paddingValues ->
         BottomNavGraph(
             // pour regler le probleme de padding value, jai
             // ajouter le paddingValues en parametres
             // de la fonction navController
-            navController = navController,paddingValues
+            navController = navController,paddingValues, pdfTitle = documentSize.toString()
 
         )
     }
 }
 
 
+@SuppressLint("Range")
+private fun getFileNameFromUri(context: Context, uri: Uri): String? {
+    var name: String? = null
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    cursor?.use {
+        it.moveToFirst()
+        name = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+    }
+    return name
+}
 
+@SuppressLint("Range")
+private fun getFileSizeFromUri(context: Context, uri: Uri): Long {
+    var size: Long = 0
+    val file = File(uri.path)
+    if (file.exists()) {
+        size = file.length()
+    } else {
+        val cursor = context.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            it.moveToFirst()
+            size = it.getLong(it.getColumnIndex(OpenableColumns.SIZE))
+        }
+    }
+    return size
+}
 
 @Composable
+
 
 fun BottomBar(navController: NavHostController, onMenuSelected: (BottomMenuData) -> Unit){
     val screens  = listOf(
@@ -142,6 +226,8 @@ fun BottomBar(navController: NavHostController, onMenuSelected: (BottomMenuData)
     }
 
 }
+
+
 
 @Composable
 fun RowScope.AddItem(

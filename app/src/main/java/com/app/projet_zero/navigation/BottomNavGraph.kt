@@ -14,7 +14,7 @@ import com.app.projet_zero.screen.ProfileScreen
 
 
 @Composable
-fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValues){
+fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValues, pdfTitle:String){
     NavHost(
         navController = navController,
         startDestination = BottomMenuData.Home.route ,
@@ -24,7 +24,7 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
             HomeScreen()
         }
         composable(route = BottomMenuData.Library.route){
-            LibraryScreen()
+            LibraryScreen(pdfTitle)
         }
         composable(route = BottomMenuData.Profile.route){
             ProfileScreen()

@@ -34,6 +34,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainMenuPreview() {
     Projet_zeroTheme {
-         MainScreen()
+        // MainScreen(context = applicationContext)
     }
 }
