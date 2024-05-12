@@ -14,17 +14,17 @@ import com.bls.compose_onboarding.data.OnBoardingPage
 
 val onBoardingPages = listOf(
     OnBoardingPage(
-        image = R.drawable.book,
+        image = R.drawable.file,
         title = "Travel Compose",
         description = "Travel-compose is a library that helps you create onboarding screens in your app",
     ),
     OnBoardingPage(
-        image = R.drawable.book,
+        image = R.drawable.file,
         title = "How to use",
         description = "Just add the library to your project and use the OnBoardingScreen composable",
     ),
     OnBoardingPage(
-        image = R.drawable.book,
+        image = R.drawable.file,
         title = "Support me",
         description = "If you like the library, please star it on GitHub",
     ),

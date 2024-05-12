@@ -2,6 +2,8 @@
 
 package com.app.projet_zero.activity
 
+import android.content.Context
+import com.app.projet_zero.navigation.MainScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,8 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.app.projet_zero.activity.ui.theme.Projet_zeroTheme
-import com.app.projet_zero.navigation.MainScreen
-import com.app.projet_zero.onboard.OnboardScreen
+
 //import com.app.projet_zero.screen.LibraryScreen
 
 class MainActivity : ComponentActivity() {
@@ -19,21 +20,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Projet_zeroTheme {
+            Projet_zeroTheme{
                 MainScreen()
-                //LibraryScreen()
-                
+                //deleteDatabase(context = applicationContext, databaseName = "Bibliotheque")
             }
         }
     }
 }
 
-
+fun deleteDatabase(context: Context, databaseName: String) {
+    val dbFile = context.getDatabasePath(databaseName)
+    if (dbFile.exists()) {
+        dbFile.delete()
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun MainMenuPreview() {
     Projet_zeroTheme {
-        // MainScreen(context = applicationContext)
+        // com.app.projet_zero.navigation.MainScreen(context = applicationContext)
     }
 }

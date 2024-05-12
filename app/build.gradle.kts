@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id ("com.google.devtools.ksp")
 }
 
 android {
@@ -61,14 +62,21 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation ("com.tom-roush:pdfbox-android:2.0.27.0")
+    implementation (libs.pdfbox.android)
     // Pager and Indicators - Accompanist
     //implementation ("com.google.accompanist:accompanist-pager:$accompanist_version")
     //implementation ("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
 
     //OnBord Compose Lib
     //implementation ("com.google.accompanist:accompanist-pager:0.24.13-rc")
-    implementation ("com.github.B-L-Studios:OnBoarding-compose:1.0.2")
+
+    // To use Kotlin Symbol Processing (KSP)
+
+    // couritnes
+    implementation (libs.kotlinx.coroutines.android)
+
+    implementation(libs.androidx.sqlite.ktx)
+    implementation (libs.onboarding.compose)
     implementation (libs.accompanist.permissions)
     implementation(libs.androidx.foundation)
     testImplementation(libs.junit)

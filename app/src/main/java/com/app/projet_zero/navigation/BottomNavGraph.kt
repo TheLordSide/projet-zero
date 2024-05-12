@@ -1,8 +1,11 @@
 package com.app.projet_zero.navigation
 
+import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,19 +17,21 @@ import com.app.projet_zero.screen.ProfileScreen
 
 
 @Composable
-fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValues, pdfTitle:String){
+fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValues, context: Context) {
+    val refreshPdfList = remember { mutableStateOf({}) }
+
     NavHost(
         navController = navController,
-        startDestination = BottomMenuData.Home.route ,
+        startDestination = BottomMenuData.Home.route,
         modifier = Modifier.padding(paddingValues),
     ) {
-        composable(route = BottomMenuData.Home.route){
+        composable(route = BottomMenuData.Home.route) {
             HomeScreen()
         }
-        composable(route = BottomMenuData.Library.route){
-            LibraryScreen(pdfTitle)
+        composable(route = BottomMenuData.Library.route) {
+            LibraryScreen(context, refreshPdfList.value)
         }
-        composable(route = BottomMenuData.Profile.route){
+        composable(route = BottomMenuData.Profile.route) {
             ProfileScreen()
         }
     }
