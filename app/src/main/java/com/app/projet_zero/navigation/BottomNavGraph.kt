@@ -18,7 +18,7 @@ import com.app.projet_zero.screen.ProfileScreen
 
 @Composable
 fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValues, context: Context) {
-    val refreshPdfList = remember { mutableStateOf({}) }
+
 
     NavHost(
         navController = navController,
@@ -29,7 +29,7 @@ fun BottomNavGraph(navController: NavHostController, paddingValues: PaddingValue
             HomeScreen()
         }
         composable(route = BottomMenuData.Library.route) {
-            LibraryScreen(context, refreshPdfList.value)
+            LibraryScreen(context)
         }
         composable(route = BottomMenuData.Profile.route) {
             ProfileScreen()

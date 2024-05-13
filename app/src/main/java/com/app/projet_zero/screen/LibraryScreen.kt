@@ -13,8 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -36,16 +37,16 @@ import com.app.projet_zero.model.PdfModel
 
 @Composable
 
-fun LibraryScreen(context: Context, refreshPdfList: () -> Unit ) {
+fun LibraryScreen(context: Context ) {
     var pdfList by remember { mutableStateOf<List<PdfModel>>(emptyList()) }
+    var pdfToDelete by remember { mutableStateOf<PdfModel?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
 
     val dbHandler = DBHandler(context)
     pdfList = dbHandler.pdfList()
 
-
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
     ) {
         itemsIndexed(pdfList) { index, item ->
             Row(
@@ -58,7 +59,8 @@ fun LibraryScreen(context: Context, refreshPdfList: () -> Unit ) {
                 Image(
                     painter = painterResource(id = R.drawable.file), // Remplacez "your_image_resource" par votre ressource d'image
                     contentDescription = "PDF Image",
-                    modifier = Modifier.size(70.dp), // Taille de l'image
+                    modifier = Modifier.size(70.dp)
+                        .padding(end = 10.dp),
                     contentScale = ContentScale.Fit
                 )
                 Column(
@@ -70,7 +72,6 @@ fun LibraryScreen(context: Context, refreshPdfList: () -> Unit ) {
                         text = pdfList[index].pdfName,
                         fontSize = 14.sp,
                         color = Color.Black
-
                     )
                     Text(
                         text = pdfList[index].pdfSize + " KB",
@@ -80,11 +81,11 @@ fun LibraryScreen(context: Context, refreshPdfList: () -> Unit ) {
                 }
                 IconButton(
                     onClick = {
-                        // Action pour supprimer un PDF
-                        // Rafraîchissement de la liste des PDF après la suppression
-                        pdfList = dbHandler.pdfList()
+                        pdfToDelete = pdfList[index]
+                        showDialog = true
                     },
                     Modifier.size(50.dp)
+
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Delete,
@@ -94,5 +95,42 @@ fun LibraryScreen(context: Context, refreshPdfList: () -> Unit ) {
                 }
             }
         }
+    }
+
+    // Boîte de dialogue de confirmation pour la suppression
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialog = false
+                pdfToDelete = null
+            },
+            title = { Text(text = "Retirer le PDF ?") },
+            text = { Text(text = "Êtes-vous sûr de vouloir retirer le PDF sélectionné ?") },
+
+            confirmButton = {
+                Button(
+                    onClick = {
+                        pdfToDelete?.let { pdf ->
+                            dbHandler.deletePDF(pdf.id)
+                            pdfList = dbHandler.pdfList()
+                        }
+                        showDialog = false
+                        pdfToDelete = null
+                    }
+                ) {
+                    Text(text = "Confirmer")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                        pdfToDelete = null
+                    }
+                ) {
+                    Text(text = "Annuler")
+                }
+            }
+        )
     }
 }

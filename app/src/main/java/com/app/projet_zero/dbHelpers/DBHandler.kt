@@ -55,6 +55,7 @@ class DBHandler
                 // on below line we are adding the data from cursor to our array list.
                 pdfModelArrayList.add(
                     PdfModel(
+                        cursorPDF.getInt(0),
                         cursorPDF.getString(1),
                         cursorPDF.getString(2),
                         cursorPDF.getString(3),
@@ -67,6 +68,13 @@ class DBHandler
         cursorPDF.close()
         return pdfModelArrayList
     }
+
+    fun deletePDF(pdfId: Int): Int {
+        val db = this.writableDatabase
+        // On utilise le format de requête SQL pour supprimer une entrée avec un ID spécifique.
+        return db.delete(TABLE_NAME, "$ID_COL = ?", arrayOf(pdfId.toString()))
+    }
+
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // this method is called to check if the table exists already.
