@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,12 +99,15 @@ fun MainScreen(){
                         BottomMenuData.Home -> "Home"
                         BottomMenuData.Library -> "Library"
                         BottomMenuData.Profile -> "Profile"
+                        else -> ({   }).toString()
                     }
 
                     topBarIcon = when (menu) {
                         BottomMenuData.Home -> Icons.Default.Home
                         BottomMenuData.Library -> Icons.Default.Add
                         BottomMenuData.Profile -> Icons.Default.Person
+
+
                     }
                 }
             )
@@ -112,7 +116,7 @@ fun MainScreen(){
 
         topBar = {
             TopAppBar(
-                title = { Text(text = topBarTitle, fontSize = 30.sp) },
+                title = { Text(text = topBarTitle, fontSize = 30.sp, color = Color.Unspecified) },
                 actions = {
                     if (topBarTitle == "Library") {
                         IconButton(onClick = {
@@ -129,14 +133,7 @@ fun MainScreen(){
                                 modifier = Modifier.size(30.dp)
                             )
                         }
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(
-                                imageVector = Icons.Filled.MoreVert,
-                                contentDescription = "More",
-                                modifier = Modifier.size(30.dp)
-                            )
 
-                        }
                     }
                 }
 

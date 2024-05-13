@@ -18,6 +18,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -71,12 +72,12 @@ fun LibraryScreen(context: Context ) {
                     Text(
                         text = pdfList[index].pdfName,
                         fontSize = 14.sp,
-                        color = Color.Black
+                        color = Color.Unspecified
                     )
                     Text(
                         text = pdfList[index].pdfSize + " KB",
                         fontSize = 14.sp,
-                        color = Color.Gray
+                        color =  Color.Unspecified
                     )
                 }
                 IconButton(
