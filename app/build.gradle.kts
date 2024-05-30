@@ -58,26 +58,20 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    // Pager and Indicators - Accompanist
-    //implementation ("com.google.accompanist:accompanist-pager:$accompanist_version")
-    //implementation ("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
-
-    //OnBord Compose Lib
-    //implementation ("com.google.accompanist:accompanist-pager:0.24.13-rc")
-
-    // To use Kotlin Symbol Processing (KSP)
-
-    // couritnes
+    implementation(libs.pdf.viewer)
     implementation (libs.kotlinx.coroutines.android)
-
     implementation(libs.androidx.sqlite.ktx)
-    implementation (libs.onboarding.compose)
     implementation (libs.accompanist.permissions)
     implementation(libs.androidx.foundation)
+    implementation(libs.androidx.documentfile)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

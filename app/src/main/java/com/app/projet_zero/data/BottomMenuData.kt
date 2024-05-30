@@ -2,7 +2,6 @@ package com.app.projet_zero.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -13,17 +12,17 @@ sealed class BottomMenuData(
     val route : String
 
 ){
-    object Home: BottomMenuData(
+    data object Home: BottomMenuData(
         icon = Icons.Outlined.Home,
         title = "Home",
         route = "home")
 
-    object Library: BottomMenuData(
+    data object Library: BottomMenuData(
         icon = Icons.Outlined.Place,
         title = "Library",
         route = "library")
 
-    object Profile: BottomMenuData(
+    data object Profile: BottomMenuData(
         icon = Icons.Outlined.AccountCircle,
         title = "Profile",
         route = "profile")

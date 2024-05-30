@@ -19,7 +19,8 @@ class DBHandler
                 + ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + TITLE + " TEXT,"
                 + SIZE + " TEXT,"
-                + URI + " TEXT)")
+                + URI + " TEXT,"
+                + PATH + " TEXT)")
         // at last we are calling a exec sql method to execute above sql query
         db.execSQL(query)
     }
@@ -28,13 +29,15 @@ class DBHandler
     fun addPDF(
         pdfName: String?,
         pdfSize: String?,
-        uri: String?
+        uri: String?,
+        path: String?
     ) {
         val db = this.writableDatabase
         val values = ContentValues()
         values.put(TITLE, pdfName)
         values.put(SIZE, pdfSize)
         values.put(URI, uri)
+        values.put(PATH, path)
         db.insert(TABLE_NAME, null, values)
         db.close()
     }
@@ -59,6 +62,7 @@ class DBHandler
                         cursorPDF.getString(1),
                         cursorPDF.getString(2),
                         cursorPDF.getString(3),
+                        cursorPDF.getString(4)
                     )
                 )
             } while (cursorPDF.moveToNext())
@@ -68,6 +72,7 @@ class DBHandler
         cursorPDF.close()
         return pdfModelArrayList
     }
+
 
     fun deletePDF(pdfId: Int): Int {
         val db = this.writableDatabase
@@ -90,5 +95,6 @@ class DBHandler
         private const val TITLE = "title"
         private const val SIZE = "size"
         private const val URI = "uri"
+        private const val PATH = "path"
     }
 }

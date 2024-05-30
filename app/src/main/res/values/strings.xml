@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">projet_zero</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_pdf_viewe_activiy">PdfVieweActiviy</string>
+    <string name="title_activity_pdf_renderer">PdfRendererActivity</string>
+    <string name="title_activity_pdf_rendered">PdfRenderedActivity</string>
 </resources>

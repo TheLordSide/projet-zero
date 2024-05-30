@@ -1,10 +1,11 @@
 package com.app.projet_zero.navigation
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.documentfile.provider.DocumentFile
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -43,7 +44,6 @@ import androidx.navigation.compose.rememberNavController
 import com.app.projet_zero.data.BottomMenuData
 import com.app.projet_zero.dbHelpers.DBHandler
 import java.io.File
-
 
 @ExperimentalMaterial3Api
 @Composable
@@ -61,33 +61,42 @@ fun MainScreen(){
         navController.navigate(BottomMenuData.Library.route)
     }
 
-    val chooseFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    val chooseFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let {
-            // Obtenez le nom du document à partir de l'URI
-            val documentName = getFileNameFromUri(context, it)
-            val documentSize = getFileSizeInKBFromUri(context, it)
-            val dbHandler = DBHandler(context)
-            dbHandler.addPDF(documentName, documentSize.toString(), uri.toString())
+            // Prenez la permission permanente pour cet URI
+            try {
+                val contentResolver = context.contentResolver
+                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                contentResolver.takePersistableUriPermission(uri, takeFlags)
 
-            // Appel de la fonction de rafraîchissement après l'ajout de la nouvelle entrée
-            refreshPdfList()
+                // Obtenez le nom du document à partir de l'URI
+                val documentName = getFileNameFromUri(context, it)
+                val documentSize = getFileSizeInKBFromUri(context, it)
+                val filePath = getFilePathFromUri(context, it)
+                val dbHandler = DBHandler(context)
+
+                dbHandler.addPDF(documentName, documentSize.toString(), uri.toString(), filePath.toString())
+
+                // Appel de la fonction de rafraîchissement après l'ajout de la nouvelle entrée
+                refreshPdfList()
+            } catch (e: SecurityException) {
+                // Handle the case where the URI does not support persistable permissions
+                Toast.makeText(context, "Unable to take persistable permissions", Toast.LENGTH_SHORT).show()
+            }
         }
-
-        // Reste du code pour charger le PDF et obtenir des informations sur le document
     }
 
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 // Si la permission est accordée, lancer la sélection de fichier PDF
-                chooseFileLauncher.launch("application/pdf")
+                chooseFileLauncher.launch(arrayOf("application/pdf"))
 
             } else {
                 // Si la permission est refusée, afficher un message d'erreur ou prendre une autre action
                 // Par exemple, afficher un Toast
-                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Permission refusée", Toast.LENGTH_SHORT).show()
             }
-
         }
 
     Scaffold(
@@ -99,21 +108,16 @@ fun MainScreen(){
                         BottomMenuData.Home -> "Home"
                         BottomMenuData.Library -> "Library"
                         BottomMenuData.Profile -> "Profile"
-                        else -> ({   }).toString()
                     }
 
                     topBarIcon = when (menu) {
                         BottomMenuData.Home -> Icons.Default.Home
                         BottomMenuData.Library -> Icons.Default.Add
                         BottomMenuData.Profile -> Icons.Default.Person
-
-
                     }
                 }
             )
         },
-
-
         topBar = {
             TopAppBar(
                 title = { Text(text = topBarTitle, fontSize = 30.sp, color = Color.Unspecified) },
@@ -125,7 +129,6 @@ fun MainScreen(){
                             } else {
                                 permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                             }
-
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Add,
@@ -133,26 +136,19 @@ fun MainScreen(){
                                 modifier = Modifier.size(30.dp)
                             )
                         }
-
                     }
                 }
-
-
             )
-        },
-
-
-        ) {paddingValues ->
+        }
+    ) { paddingValues ->
         BottomNavGraph(
             // pour regler le probleme de padding value, jai
             // ajouter le paddingValues en parametres
             // de la fonction navController
-            navController = navController,paddingValues, context = LocalContext.current
-
+            navController = navController, paddingValues, context = LocalContext.current
         )
     }
 }
-
 
 @SuppressLint("Range")
 private fun getFileNameFromUri(context: Context, uri: Uri): String? {
@@ -185,20 +181,28 @@ private fun getFileSizeInKBFromUri(context: Context, uri: Uri): Long {
     return size
 }
 
+private fun getFilePathFromUri(context: Context, uri: Uri): String? {
+    var filePath: String? = null
+    context.contentResolver
+
+    if (DocumentsContract.isDocumentUri(context, uri)) {
+        val documentFile = DocumentFile.fromSingleUri(context, uri)
+        filePath = documentFile?.uri?.path
+    }
+
+    return filePath
+}
+
 @Composable
-
-
 fun BottomBar(navController: NavHostController, onMenuSelected: (BottomMenuData) -> Unit){
     val screens  = listOf(
         BottomMenuData.Home,
         BottomMenuData.Library,
         BottomMenuData.Profile
-
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
 
     NavigationBar {
         screens.forEach { screen ->
@@ -208,13 +212,9 @@ fun BottomBar(navController: NavHostController, onMenuSelected: (BottomMenuData)
                 navController = navController,
                 onMenuSelected = onMenuSelected
             )
-
         }
     }
-
 }
-
-
 
 @Composable
 fun RowScope.AddItem(
@@ -223,38 +223,28 @@ fun RowScope.AddItem(
     navController: NavHostController,
     onMenuSelected: (BottomMenuData) -> Unit
 ) {
-
     NavigationBarItem(
         label = {
-            Text(
-                text =
-                screen.title
-            )
+            Text(text = screen.title)
         },
         selected = currentDestination?.hierarchy?.any {
             it.route == screen.route
         } == true,
         onClick = {
-
             navController.navigate(screen.route){
                 popUpTo(navController.graph.findStartDestination().id){
                     saveState = true
                 }
                 launchSingleTop = true
                 restoreState = true
-
             }
             onMenuSelected(screen)
-
-
         },
         icon = {
             Icon(
                 imageVector = screen.icon,
                 contentDescription = screen.title
             )
-        },
-
-
-        )
+        }
+    )
 }

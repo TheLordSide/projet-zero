@@ -1,9 +1,8 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.app.projet_zero.activity
 
-import android.content.Context
 import com.app.projet_zero.navigation.MainScreen
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,9 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.app.projet_zero.activity.ui.theme.Projet_zeroTheme
 
+
 //import com.app.projet_zero.screen.LibraryScreen
 
 class MainActivity : ComponentActivity() {
+    @ExperimentalMaterial3Api
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,6 +40,6 @@ fun deleteDatabase(context: Context, databaseName: String) {
 @Composable
 fun MainMenuPreview() {
     Projet_zeroTheme {
-        // com.app.projet_zero.navigation.MainScreen(context = applicationContext)
+        // com.app.projet_zero.navigation.com.app.projet_zero.navigation.MainScreen(context = applicationContext)
     }
 }
