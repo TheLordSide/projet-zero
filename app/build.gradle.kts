@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation (libs.pdfbox.android)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)

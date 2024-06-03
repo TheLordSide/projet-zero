@@ -16,7 +16,7 @@ composeBom = "2024.05.00"
 loggingInterceptor = "4.12.0"
 navigationCompose = "2.7.7"
 onboardingCompose = "1.0.2"
-pdfboxAndroid = "2.0.27.0"
+pdfboxAndroidVersion = "2.0.27.0"
 pdfViewer = "2.1.1"
 retrofit = "2.9.0"
 roomRuntime = "2.6.1"
@@ -51,6 +51,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 pdf-viewer = { module = "io.github.afreakyelf:Pdf-Viewer", version.ref = "pdfViewer" }
+pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "pdfboxAndroidVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
